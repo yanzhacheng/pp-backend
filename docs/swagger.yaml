@@ -1,0 +1,9 @@
+info:
+  contact: {}
+  description: Ping Pong Management System Backend
+  license: {}
+  termsOfService: https://github.com/yanzhacheng/pp-backend
+  title: Golang Gin API
+  version: "1.0"
+paths: {}
+swagger: "2.0"

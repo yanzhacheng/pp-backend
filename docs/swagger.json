@@ -1,0 +1,12 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Ping Pong Management System Backend",
+        "title": "Golang Gin API",
+        "termsOfService": "https://github.com/yanzhacheng/pp-backend",
+        "contact": {},
+        "license": {},
+        "version": "1.0"
+    },
+    "paths": {}
+}
