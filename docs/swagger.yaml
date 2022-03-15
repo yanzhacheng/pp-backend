@@ -1,3 +1,13 @@
+definitions:
+  app.Response:
+    properties:
+      code:
+        type: integer
+      data:
+        type: object
+      msg:
+        type: string
+    type: object
 info:
   contact: {}
   description: Ping Pong Management System Backend
@@ -5,5 +15,26 @@ info:
   termsOfService: https://github.com/yanzhacheng/pp-backend
   title: Golang Gin API
   version: "1.0"
-paths: {}
+paths:
+  /api/v1/tags:
+    post:
+      parameters:
+      - description: TagName
+        in: body
+        name: tag_name
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Add article tag
 swagger: "2.0"

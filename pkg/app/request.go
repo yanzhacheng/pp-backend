@@ -1,6 +1,9 @@
 package app
 
-import "github.com/astaxie/beego/validation"
+import (
+	"github.com/astaxie/beego/validation"
+	"pp-backend/pkg/logging"
+)
 
 // MarkErrors logs error logs
 func MarkErrors(errors []*validation.Error) {
