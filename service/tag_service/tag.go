@@ -1,7 +1,5 @@
 package tag_service
 
-import "pp-backend/models"
-
 type Tag struct {
 	ID      int
 	TagName string
@@ -10,14 +8,14 @@ type Tag struct {
 	PageSize int
 }
 
-func (t *Tag) ExistByName() (bool, error) {
-	return models.ExistTagByName(t.TagName)
-}
-
-func (t *Tag) ExistByID() (bool, error) {
-	return models.ExistTagByID(t.ID)
-}
-
-func (t *Tag) Add() error {
-	return models.AddTag(t.TagName)
-}
+//func (t *Tag) ExistByName() (bool, error) {
+//	return models.ExistTagByName(t.TagName)
+//}
+//
+//func (t *Tag) ExistByID() (bool, error) {
+//	return models.ExistTagByID(t.ID)
+//}
+//
+//func (t *Tag) Add() error {
+//	return models.AddTag(t.TagName)
+//}
