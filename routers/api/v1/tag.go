@@ -9,6 +9,7 @@ type AddTagForm struct {
 }
 
 // @Summary Add article tag
+// @Tags Tag
 // @Produce  json
 // @Param tag_name body string true "TagName"
 // @Success 200 {object} app.Response
