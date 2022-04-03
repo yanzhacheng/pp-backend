@@ -10,8 +10,8 @@ type Article struct {
 
 	Title         string `json:"title"`
 	Desc          string `json:"desc"`
-	Content       string `json:"content"`
-	CoverImageUrl string `json:"cover_image_url"`
+	Content       string `json:"content" gorm:"type:text"`
+	CoverImageUrl string `json:"cover_image_url" gorm:"type:text"`
 	Author        string `json:"author"`
 	State         int    `json:"state"`
 }
@@ -41,10 +41,10 @@ func GetArticleTotal(maps interface{}) (int, error) {
 	return count, nil
 }
 
-// GetArticles gets a list of articles based on paging constraints
-func GetArticles(pageNum int, pageSize int, maps interface{}) ([]*Article, error) {
+// GetArticles gets a list of articles
+func GetArticles(maps interface{}) ([]*Article, error) {
 	var articles []*Article
-	err := db.Preload("Tag").Where(maps).Offset(pageNum).Limit(pageSize).Find(&articles).Error
+	err := db.Preload("Tag").Where(maps).Find(&articles).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
