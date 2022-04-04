@@ -36,9 +36,9 @@ func GetTutorialTotal(maps interface{}) (int, error) {
 }
 
 // GetTutorials gets a list of tutorials based on paging constraints
-func GetTutorials(pageNum int, pageSize int, maps interface{}) ([]*Tutorial, error) {
+func GetTutorials(maps interface{}) ([]*Tutorial, error) {
 	var tutorials []*Tutorial
-	err := db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&tutorials).Error
+	err := db.Where(maps).Find(&tutorials).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}

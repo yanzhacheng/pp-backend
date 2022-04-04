@@ -1,6 +1,14 @@
 package v1
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/astaxie/beego/validation"
+	"github.com/gin-gonic/gin"
+	"github.com/unknwon/com"
+	"net/http"
+	"pp-backend/pkg/app"
+	"pp-backend/pkg/e"
+	"pp-backend/service/tutorial_service"
+)
 
 // @Summary Get a single tutorial
 // @Tags Tutorial
@@ -10,16 +18,35 @@ import "github.com/gin-gonic/gin"
 // @Failure 500 {object} app.Response
 // @Router /api/v1/tutorials/{id} [get]
 func GetTutorial(c *gin.Context) {
-}
+	appG := app.Gin{C: c}
+	id := com.StrTo(c.Param("id")).MustInt()
+	valid := validation.Validation{}
+	valid.Min(id, 1, "id")
 
-// @Summary Search multiple tutorials
-// @Tags Tutorial
-// @Produce  json
-// @Param key_words body int true "Search key words"
-// @Success 200 {object} app.Response
-// @Failure 500 {object} app.Response
-// @Router /api/v1/tutorials [get]
-func SearchTutorials(c *gin.Context) {
+	if valid.HasErrors() {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
+		return
+	}
+
+	tutorialService := tutorial_service.Tutorial{ID: id}
+	exists, err := tutorialService.ExistByID()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
+		return
+	}
+	if !exists {
+		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, nil)
+		return
+	}
+
+	tutorial, err := tutorialService.Get()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_GET_ARTICLE_FAIL, nil)
+		return
+	}
+
+	appG.Response(http.StatusOK, e.SUCCESS, tutorial)
 }
 
 type AddTutorialForm struct {
@@ -38,6 +65,28 @@ type AddTutorialForm struct {
 // @Failure 500 {object} app.Response
 // @Router /api/v1/tutorials [post]
 func AddTutorial(c *gin.Context) {
+	var (
+		appG = app.Gin{C: c}
+		form AddTutorialForm
+	)
+
+	httpCode, errCode := app.BindAndValid(c, &form)
+	if errCode != e.SUCCESS {
+		appG.Response(httpCode, errCode, nil)
+		return
+	}
+
+	tutorialService := tutorial_service.Tutorial{
+		Title:   form.Title,
+		Content: form.Content,
+		Type:    form.Type,
+	}
+	if err := tutorialService.Add(); err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_ARTICLE_FAIL, nil)
+		return
+	}
+
+	appG.Response(http.StatusOK, e.SUCCESS, nil)
 }
 
 type EditTutorialForm struct {
@@ -58,6 +107,40 @@ type EditTutorialForm struct {
 // @Failure 500 {object} app.Response
 // @Router /api/v1/tutorials/{id} [put]
 func EditTutorial(c *gin.Context) {
+	var (
+		appG = app.Gin{C: c}
+		form EditTutorialForm
+	)
+
+	httpCode, errCode := app.BindAndValid(c, &form)
+	if errCode != e.SUCCESS {
+		appG.Response(httpCode, errCode, nil)
+		return
+	}
+
+	tutorialService := tutorial_service.Tutorial{
+		Title:   form.Title,
+		Content: form.Content,
+		Type:    form.Type,
+	}
+
+	exists, err := tutorialService.ExistByID()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
+		return
+	}
+	if !exists {
+		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, nil)
+		return
+	}
+
+	err = tutorialService.Edit()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_EDIT_ARTICLE_FAIL, nil)
+		return
+	}
+
+	appG.Response(http.StatusOK, e.SUCCESS, nil)
 }
 
 // @Summary Delete tutorial
@@ -68,4 +151,33 @@ func EditTutorial(c *gin.Context) {
 // @Failure 500 {object} app.Response
 // @Router /api/v1/tutorials/{id} [delete]
 func DeleteTutorial(c *gin.Context) {
+	appG := app.Gin{C: c}
+	valid := validation.Validation{}
+	id := com.StrTo(c.Param("id")).MustInt()
+	valid.Min(id, 1, "id").Message("ID必须大于0")
+
+	if valid.HasErrors() {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		return
+	}
+
+	tutorialService := tutorial_service.Tutorial{ID: id}
+	exists, err := tutorialService.ExistByID()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
+		return
+	}
+	if !exists {
+		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, nil)
+		return
+	}
+
+	err = tutorialService.Delete()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_DELETE_ARTICLE_FAIL, nil)
+		return
+	}
+
+	appG.Response(http.StatusOK, e.SUCCESS, nil)
 }
