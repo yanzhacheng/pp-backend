@@ -54,9 +54,6 @@ func GetArticle(c *gin.Context) {
 // @Summary Get multiple articles
 // @Tags Article
 // @Produce  json
-// @Param tag_id body int false "TagID"
-// @Param state body int false "State"
-// @Param created_by body int false "CreatedBy"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Router /articles [get]

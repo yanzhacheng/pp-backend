@@ -214,3 +214,34 @@ func SearchTutorials(c *gin.Context) {
 
 	appG.Response(http.StatusOK, e.SUCCESS, data)
 }
+
+// @Summary Get multiple tutorials
+// @Tags Tutorial
+// @Produce  json
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Router /tutorials [get]
+func GetTutorials(c *gin.Context) {
+	appG := app.Gin{C: c}
+	valid := validation.Validation{}
+
+	if valid.HasErrors() {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
+		return
+	}
+
+	tutorialService := tutorial_service.Tutorial{}
+
+	tutorials, err := tutorialService.GetAll()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_GET_ARTICLES_FAIL, nil)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["lists"] = tutorials
+	//data["total"] = total
+
+	appG.Response(http.StatusOK, e.SUCCESS, data)
+}
