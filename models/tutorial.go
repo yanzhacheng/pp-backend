@@ -97,3 +97,14 @@ func CleanAllTutorial() error {
 
 	return nil
 }
+
+// SearchTutorials search a list of tutorials
+func SearchTutorials(keyword string) ([]*Tutorial, error) {
+	var tutorials []*Tutorial
+	err := db.Where("title LIKE ?", "%"+keyword+"%").Find(&tutorials).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	return tutorials, nil
+}

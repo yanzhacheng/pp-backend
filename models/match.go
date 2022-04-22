@@ -27,17 +27,11 @@ func AddMatch(p1Name string, p1Score int, p2Name string, p2Score int) error {
 }
 
 // GetMatches gets a list of matches based on paging and constraints
-func GetMatches(pageNum int, pageSize int, maps interface{}) ([]Match, error) {
+func GetMatches(maps interface{}) ([]Match, error) {
 	var (
 		matches []Match
 		err     error
 	)
-
-	if pageSize > 0 && pageNum > 0 {
-		err = db.Where(maps).Find(&matches).Offset(pageNum).Limit(pageSize).Error
-	} else {
-		err = db.Where(maps).Find(&matches).Error
-	}
 
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err

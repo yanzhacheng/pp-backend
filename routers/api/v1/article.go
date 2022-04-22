@@ -17,10 +17,10 @@ import (
 // @Param id path int true "ID"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/article/{id} [get]
+// @Router /article [get]
 func GetArticle(c *gin.Context) {
 	appG := app.Gin{C: c}
-	id := com.StrTo(c.Param("id")).MustInt()
+	id := com.StrTo(c.Query("id")).MustInt()
 	valid := validation.Validation{}
 	valid.Min(id, 1, "id")
 
@@ -52,13 +52,14 @@ func GetArticle(c *gin.Context) {
 }
 
 // @Summary Get multiple articles
+// @Tags Article
 // @Produce  json
 // @Param tag_id body int false "TagID"
 // @Param state body int false "State"
 // @Param created_by body int false "CreatedBy"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/articles [get]
+// @Router /articles [get]
 func GetArticles(c *gin.Context) {
 	appG := app.Gin{C: c}
 	valid := validation.Validation{}
@@ -105,14 +106,37 @@ func GetArticles(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, data)
 }
 
+type SearchArticleForm struct {
+	Keyword string `form:"keyword" valid:"Required"`
+}
+
 // @Summary Search multiple articles
 // @Tags Article
 // @Produce  json
-// @Param key_words body int true "Search key words"
+// @Param keywords query int true "Search keyword"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/articles [get]
+// @Router /articles/search [get]
 func SearchArticles(c *gin.Context) {
+	var appG = app.Gin{C: c}
+
+	keyword := c.Query("keyword")
+
+	articleService := article_service.Article{
+		Title: keyword,
+	}
+
+	articles, err := articleService.SearchArticles()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_GET_ARTICLES_FAIL, nil)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["lists"] = articles
+	//data["total"] = total
+
+	appG.Response(http.StatusOK, e.SUCCESS, data)
 }
 
 type AddArticleForm struct {
@@ -137,7 +161,7 @@ type AddArticleForm struct {
 // @Param state body int true "State"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/articles [post]
+// @Router /article [post]
 func AddArticle(c *gin.Context) {
 	var (
 		appG = app.Gin{C: c}
@@ -201,11 +225,11 @@ type EditArticleForm struct {
 // @Param state body int false "State"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/articles/{id} [put]
+// @Router /article [put]
 func EditArticle(c *gin.Context) {
 	var (
 		appG = app.Gin{C: c}
-		form = EditArticleForm{ID: com.StrTo(c.Param("id")).MustInt()}
+		form EditArticleForm
 	)
 
 	httpCode, errCode := app.BindAndValid(c, &form)
@@ -258,14 +282,14 @@ func EditArticle(c *gin.Context) {
 // @Summary Delete article
 // @Tags Article
 // @Produce  json
-// @Param id path int true "ID"
+// @Param id query int true "ID"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/articles/{id} [delete]
+// @Router /article [delete]
 func DeleteArticle(c *gin.Context) {
 	appG := app.Gin{C: c}
 	valid := validation.Validation{}
-	id := com.StrTo(c.Param("id")).MustInt()
+	id := com.StrTo(c.Query("id")).MustInt()
 	valid.Min(id, 1, "id").Message("ID必须大于0")
 
 	if valid.HasErrors() {

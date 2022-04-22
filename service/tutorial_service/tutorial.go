@@ -69,3 +69,14 @@ func (t *Tutorial) getMaps() map[string]interface{} {
 
 	return maps
 }
+
+func (t *Tutorial) SearchTutorials() ([]*models.Tutorial, error) {
+	var tutorials []*models.Tutorial
+
+	tutorials, err := models.SearchTutorials(t.Title)
+	if err != nil {
+		return nil, err
+	}
+
+	return tutorials, nil
+}

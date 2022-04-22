@@ -16,86 +16,11 @@ info:
   title: Golang Gin API
   version: "1.0"
 paths:
-  /api/v1/articles:
-    get:
-      parameters:
-      - description: Search key words
-        in: body
-        name: key_words
-        required: true
-        schema:
-          type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/app.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/app.Response'
-      summary: Search multiple articles
-      tags:
-      - Article
-    post:
-      parameters:
-      - description: TagID
-        in: body
-        name: tag_id
-        required: true
-        schema:
-          type: integer
-      - description: Title
-        in: body
-        name: title
-        required: true
-        schema:
-          type: string
-      - description: Desc
-        in: body
-        name: desc
-        required: true
-        schema:
-          type: string
-      - description: Content
-        in: body
-        name: content
-        required: true
-        schema:
-          type: string
-      - description: Author
-        in: body
-        name: author
-        required: true
-        schema:
-          type: string
-      - description: State
-        in: body
-        name: state
-        required: true
-        schema:
-          type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/app.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/app.Response'
-      summary: Add article
-      tags:
-      - Article
-  /api/v1/articles/{id}:
+  /article:
     delete:
       parameters:
       - description: ID
-        in: path
+        in: query
         name: id
         required: true
         type: integer
@@ -132,6 +57,64 @@ paths:
           schema:
             $ref: '#/definitions/app.Response'
       summary: Get a single article
+      tags:
+      - Article
+    post:
+      parameters:
+      - description: TagID
+        in: body
+        name: tag_id
+        required: true
+        schema:
+          type: integer
+      - description: Title
+        in: body
+        name: title
+        required: true
+        schema:
+          type: string
+      - description: Desc
+        in: body
+        name: desc
+        required: true
+        schema:
+          type: string
+      - description: CoverImageUrl
+        in: body
+        name: cover_image_url
+        required: true
+        schema:
+          type: string
+      - description: Content
+        in: body
+        name: content
+        required: true
+        schema:
+          type: string
+      - description: Author
+        in: body
+        name: author
+        required: true
+        schema:
+          type: string
+      - description: State
+        in: body
+        name: state
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Add article
       tags:
       - Article
     put:
@@ -186,36 +169,22 @@ paths:
       summary: Update article
       tags:
       - Article
-  /api/v1/tags:
-    post:
-      parameters:
-      - description: TagName
-        in: body
-        name: tag_name
-        required: true
-        schema:
-          type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/app.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/app.Response'
-      summary: Add article tag
-      tags:
-      - Tag
-  /api/v1/tutorials:
+  /articles:
     get:
       parameters:
-      - description: Search key words
+      - description: TagID
         in: body
-        name: key_words
-        required: true
+        name: tag_id
+        schema:
+          type: integer
+      - description: State
+        in: body
+        name: state
+        schema:
+          type: integer
+      - description: CreatedBy
+        in: body
+        name: created_by
         schema:
           type: integer
       produces:
@@ -229,7 +198,72 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.Response'
-      summary: Search multiple tutorials
+      summary: Get multiple articles
+      tags:
+      - Article
+  /articles/search:
+    get:
+      parameters:
+      - description: Search keyword
+        in: query
+        name: keywords
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Search multiple articles
+      tags:
+      - Article
+  /tutorial:
+    delete:
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Delete tutorial
+      tags:
+      - Tutorial
+    get:
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get a single tutorial
       tags:
       - Tutorial
     post:
@@ -265,56 +299,14 @@ paths:
       summary: Add tutorial
       tags:
       - Tutorial
-  /api/v1/tutorials/{id}:
-    delete:
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/app.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/app.Response'
-      summary: Delete tutorial
-      tags:
-      - Tutorial
-    get:
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/app.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/app.Response'
-      summary: Get a single tutorial
-      tags:
-      - Tutorial
     put:
       parameters:
       - description: ID
-        in: path
+        in: body
         name: id
         required: true
-        type: integer
+        schema:
+          type: integer
       - description: Title
         in: body
         name: title
@@ -344,4 +336,133 @@ paths:
       summary: Update tutorial
       tags:
       - Tutorial
+  /tutorials/search:
+    get:
+      parameters:
+      - description: Search keyword
+        in: query
+        name: keyword
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Search multiple tutorials
+      tags:
+      - Tutorial
+  /user:
+    get:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get user info
+      tags:
+      - User
+    post:
+      parameters:
+      - description: Username
+        in: body
+        name: username
+        required: true
+        schema:
+          type: string
+      - description: Password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Add User
+      tags:
+      - User
+    put:
+      parameters:
+      - description: Username
+        in: body
+        name: username
+        required: true
+        schema:
+          type: string
+      - description: Password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Update user info
+      tags:
+      - User
+  /user/login:
+    post:
+      parameters:
+      - description: Username
+        in: body
+        name: username
+        required: true
+        schema:
+          type: string
+      - description: Password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: User login
+      tags:
+      - User
 swagger: "2.0"

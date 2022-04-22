@@ -18,7 +18,7 @@ func InitRouter() *gin.Engine {
 
 	//r.POST("/auth", api.GetAuth)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	apiv1 := r.Group("/api/v1")
+	apiv1 := r.Group("")
 	apiv1.Use()
 	//apiv1.Use(jwt.JWT())
 	{
@@ -34,26 +34,37 @@ func InitRouter() *gin.Engine {
 		//获取文章列表
 		apiv1.GET("/articles", v1.GetArticles)
 		//获取指定文章
-		apiv1.GET("/articles/:id", v1.GetArticle)
+		apiv1.GET("/article", v1.GetArticle)
 		//新建文章
-		apiv1.POST("/articles", v1.AddArticle)
+		apiv1.POST("/article", v1.AddArticle)
 		//更新指定文章
-		apiv1.PUT("/articles/:id", v1.EditArticle)
+		apiv1.PUT("/article", v1.EditArticle)
 		//删除指定文章
-		apiv1.DELETE("/articles/:id", v1.DeleteArticle)
-		//生成文章海报
-		//apiv1.POST("/articles/poster/generate", v1.GenerateArticlePoster)
+		apiv1.DELETE("/article", v1.DeleteArticle)
+		//搜索文章
+		apiv1.GET("/articles/search", v1.SearchArticles)
 
 		//获取教程列表
-		//apiv1.GET("/tutorials", v1.GetTutorial)
+		//apiv1.GET("/tutorials", v1.GetTutorials)
 		//获取指定教程
-		apiv1.GET("/tutorials/:id", v1.GetTutorial)
+		apiv1.GET("/tutorial", v1.GetTutorial)
 		//新建教程
 		apiv1.POST("/tutorials", v1.AddTutorial)
 		//更新指定教程
-		apiv1.PUT("/tutorials/:id", v1.EditTutorial)
+		apiv1.PUT("/tutorial", v1.EditTutorial)
 		//删除指定教程
-		apiv1.DELETE("/tutorials/:id", v1.DeleteTutorial)
+		apiv1.DELETE("/tutorial", v1.DeleteTutorial)
+		//搜索教程
+		apiv1.GET("/tutorials/search", v1.SearchTutorials)
+
+		// 获取用户信息
+		apiv1.GET("/user", v1.GetUser)
+		// 注册
+		apiv1.POST("/user", v1.AddUser)
+		// 更新用户信息
+		apiv1.PUT("/user", v1.EditUser)
+		// 登录
+		apiv1.POST("/user/login", v1.Login)
 	}
 
 	return r

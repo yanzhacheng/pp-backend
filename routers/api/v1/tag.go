@@ -10,12 +10,6 @@ import (
 	"pp-backend/service/tag_service"
 )
 
-// @Summary Get multiple article tags
-// @Produce  json
-// @Param tag_name query string false "TagName"
-// @Success 200 {object} app.Response
-// @Failure 500 {object} app.Response
-// @Router /api/v1/tags [get]
 func GetTags(c *gin.Context) {
 	appG := app.Gin{C: c}
 	tagName := c.Query("tag_name")
@@ -38,12 +32,6 @@ type AddTagForm struct {
 	TagName string `form:"tag_name" valid:"Required;MaxSize(100)"`
 }
 
-// @Summary Add article tag
-// @Produce  json
-// @Param tag_name body string true "TagName"
-// @Success 200 {object} app.Response
-// @Failure 500 {object} app.Response
-// @Router /api/v1/tags [post]
 func AddTag(c *gin.Context) {
 	var (
 		appG = app.Gin{C: c}
@@ -83,13 +71,6 @@ type EditTagForm struct {
 	TagName string `form:"tag_name" valid:"Required;MaxSize(100)"`
 }
 
-// @Summary Update article tag
-// @Produce  json
-// @Param id path int true "ID"
-// @Param tag_name body string true "TagName"
-// @Success 200 {object} app.Response
-// @Failure 500 {object} app.Response
-// @Router /api/v1/tags/{id} [put]
 func EditTag(c *gin.Context) {
 	var (
 		appG = app.Gin{C: c}
@@ -127,12 +108,6 @@ func EditTag(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
 }
 
-// @Summary Delete article tag
-// @Produce  json
-// @Param id path int true "ID"
-// @Success 200 {object} app.Response
-// @Failure 500 {object} app.Response
-// @Router /api/v1/tags/{id} [delete]
 func DeleteTag(c *gin.Context) {
 	appG := app.Gin{C: c}
 	valid := validation.Validation{}

@@ -52,6 +52,17 @@ func GetArticles(maps interface{}) ([]*Article, error) {
 	return articles, nil
 }
 
+// SearchArticles search a list of articles
+func SearchArticles(keyword string) ([]*Article, error) {
+	var articles []*Article
+	err := db.Where("title LIKE ?", "%"+keyword+"%").Find(&articles).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	return articles, nil
+}
+
 // GetArticle Get a single article based on ID
 func GetArticle(id int) (*Article, error) {
 	var article Article

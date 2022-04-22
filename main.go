@@ -29,7 +29,7 @@ func main() {
 	routersInit := routers.InitRouter()
 	readTimeout := setting.ServerSetting.ReadTimeout
 	writeTimeout := setting.ServerSetting.WriteTimeout
-	endPoint := fmt.Sprintf(":%d", setting.ServerSetting.HttpPort)
+	endPoint := fmt.Sprintf("127.0.0.1:%d", setting.ServerSetting.HttpPort)
 	maxHeaderBytes := 1 << 20
 
 	server := &http.Server{

@@ -88,3 +88,14 @@ func (a *Article) getMaps() map[string]interface{} {
 
 	return maps
 }
+
+func (a *Article) SearchArticles() ([]*models.Article, error) {
+	var articles []*models.Article
+
+	articles, err := models.SearchArticles(a.Title)
+	if err != nil {
+		return nil, err
+	}
+
+	return articles, nil
+}

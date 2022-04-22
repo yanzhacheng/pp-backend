@@ -13,13 +13,13 @@ import (
 // @Summary Get a single tutorial
 // @Tags Tutorial
 // @Produce  json
-// @Param id path int true "ID"
+// @Param id query int true "ID"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/tutorials/{id} [get]
+// @Router /tutorial [get]
 func GetTutorial(c *gin.Context) {
 	appG := app.Gin{C: c}
-	id := com.StrTo(c.Param("id")).MustInt()
+	id := com.StrTo(c.Query("id")).MustInt()
 	valid := validation.Validation{}
 	valid.Min(id, 1, "id")
 
@@ -63,7 +63,7 @@ type AddTutorialForm struct {
 // @Param type body int false "Type"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/tutorials [post]
+// @Router /tutorial [post]
 func AddTutorial(c *gin.Context) {
 	var (
 		appG = app.Gin{C: c}
@@ -99,13 +99,13 @@ type EditTutorialForm struct {
 // @Summary Update tutorial
 // @Tags Tutorial
 // @Produce  json
-// @Param id path int true "ID"
+// @Param id body int true "ID"
 // @Param title body string false "Title"
 // @Param content body string false "Content"
 // @Param type body int false "Type"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/tutorials/{id} [put]
+// @Router /tutorial [put]
 func EditTutorial(c *gin.Context) {
 	var (
 		appG = app.Gin{C: c}
@@ -119,6 +119,7 @@ func EditTutorial(c *gin.Context) {
 	}
 
 	tutorialService := tutorial_service.Tutorial{
+		ID:      form.ID,
 		Title:   form.Title,
 		Content: form.Content,
 		Type:    form.Type,
@@ -146,14 +147,14 @@ func EditTutorial(c *gin.Context) {
 // @Summary Delete tutorial
 // @Tags Tutorial
 // @Produce  json
-// @Param id path int true "ID"
+// @Param id query int true "ID"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/tutorials/{id} [delete]
+// @Router /tutorial [delete]
 func DeleteTutorial(c *gin.Context) {
 	appG := app.Gin{C: c}
 	valid := validation.Validation{}
-	id := com.StrTo(c.Param("id")).MustInt()
+	id := com.StrTo(c.Query("id")).MustInt()
 	valid.Min(id, 1, "id").Message("ID必须大于0")
 
 	if valid.HasErrors() {
@@ -180,4 +181,36 @@ func DeleteTutorial(c *gin.Context) {
 	}
 
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
+}
+
+type SearchTutorialForm struct {
+	Keyword string `form:"keyword" valid:"Required"`
+}
+
+// @Summary Search multiple tutorials
+// @Tags Tutorial
+// @Produce  json
+// @Param keyword query string true "Search keyword"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Router /tutorials/search [get]
+func SearchTutorials(c *gin.Context) {
+	var appG = app.Gin{C: c}
+
+	keyword := c.Query("keyword")
+
+	tutorialService := tutorial_service.Tutorial{
+		Title: keyword,
+	}
+
+	tutorials, err := tutorialService.SearchTutorials()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_GET_ARTICLES_FAIL, nil)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["lists"] = tutorials
+
+	appG.Response(http.StatusOK, e.SUCCESS, data)
 }
