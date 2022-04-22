@@ -245,3 +245,32 @@ func GetTutorials(c *gin.Context) {
 
 	appG.Response(http.StatusOK, e.SUCCESS, data)
 }
+
+// @Summary Get multiple tutorials
+// @Tags Tutorial
+// @Produce  json
+// @Param type query int true "Type"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Router /tutorials/filter [get]
+func GetFilterTutorials(c *gin.Context) {
+	appG := app.Gin{C: c}
+
+	t := com.StrTo(c.Query("type")).MustInt()
+
+	tutorialService := tutorial_service.Tutorial{
+		Type: t,
+	}
+
+	tutorials, err := tutorialService.GetAll()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_GET_ARTICLES_FAIL, nil)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["lists"] = tutorials
+	//data["total"] = total
+
+	appG.Response(http.StatusOK, e.SUCCESS, data)
+}

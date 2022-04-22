@@ -50,6 +50,7 @@ func InitRouter() *gin.Engine {
 		apiv1.GET("/tutorial", v1.GetTutorial)
 		//获取所有教程
 		apiv1.GET("/tutorials", v1.GetTutorials)
+		apiv1.GET("/tutorials/filter", v1.GetFilterTutorials)
 		//新建教程
 		apiv1.POST("/tutorial", v1.AddTutorial)
 		//更新指定教程
