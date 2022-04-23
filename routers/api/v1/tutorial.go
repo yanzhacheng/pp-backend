@@ -262,7 +262,7 @@ func GetFilterTutorials(c *gin.Context) {
 		Type: t,
 	}
 
-	tutorials, err := tutorialService.GetAll()
+	tutorials, err := tutorialService.GetAllByType()
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_GET_ARTICLES_FAIL, nil)
 		return

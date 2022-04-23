@@ -51,6 +51,17 @@ func (t *Tutorial) GetAll() ([]*models.Tutorial, error) {
 	return tutorials, nil
 }
 
+func (t *Tutorial) GetAllByType() ([]*models.Tutorial, error) {
+	var tutorials []*models.Tutorial
+
+	tutorials, err := models.GetTutorialsByType(t.Type)
+	if err != nil {
+		return nil, err
+	}
+
+	return tutorials, nil
+}
+
 func (t *Tutorial) Delete() error {
 	return models.DeleteTutorial(t.ID)
 }

@@ -46,6 +46,17 @@ func GetTutorials(maps interface{}) ([]*Tutorial, error) {
 	return tutorials, nil
 }
 
+// GetTutorialsByType gets a list of tutorials based on type
+func GetTutorialsByType(t int) ([]*Tutorial, error) {
+	var tutorials []*Tutorial
+	err := db.Where("type = ? AND deleted_on = ? ", t, 0).Find(&tutorials).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	return tutorials, nil
+}
+
 // GetTutorial Get a single tutorial based on ID
 func GetTutorial(id int) (*Tutorial, error) {
 	var tutorial Tutorial
