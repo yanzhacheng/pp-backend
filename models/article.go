@@ -123,3 +123,14 @@ func CleanAllArticle() error {
 
 	return nil
 }
+
+// GetArticlesByTag gets a list of articles based on tag_id
+func GetArticlesByTag(t int) ([]*Article, error) {
+	var articles []*Article
+	err := db.Where("tag_id = ? AND deleted_on = ? ", t, 0).Find(&articles).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	return articles, nil
+}

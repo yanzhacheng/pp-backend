@@ -43,6 +43,8 @@ func InitRouter() *gin.Engine {
 		apiv1.DELETE("/article", v1.DeleteArticle)
 		//搜索文章
 		apiv1.GET("/articles/search", v1.SearchArticles)
+		//
+		apiv1.GET("/articles/filter", v1.GetFilterArticles)
 
 		//获取教程列表
 		//apiv1.GET("/tutorials", v1.GetTutorials)

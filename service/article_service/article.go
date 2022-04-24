@@ -99,3 +99,14 @@ func (a *Article) SearchArticles() ([]*models.Article, error) {
 
 	return articles, nil
 }
+
+func (a *Article) GetAllByTag() ([]*models.Article, error) {
+	var articles []*models.Article
+
+	articles, err := models.GetArticlesByTag(a.TagID)
+	if err != nil {
+		return nil, err
+	}
+
+	return articles, nil
+}
